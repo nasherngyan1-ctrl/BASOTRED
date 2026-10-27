@@ -27,21 +27,30 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Android SDK (API 36 / 36.1)
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android SDK Licenses & Install SDK 36.1
+      - name: Configure Android SDK & Licenses
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-36" "platforms;android-36.1" "build-tools;36.0.0" || sdkmanager "platform-tools" "platforms;android-36" "build-tools;35.0.0"
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
 
-      - name: Setup Gradle 9.3.1
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '9.3.1'
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf "\n24333f8a63b6825ea9c5514f83c2829b004d1fee\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n" > "$ANDROID_HOME/licenses/android-sdk-license"
+          printf "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910\n" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
 
-      - name: Restore Signing Keystore & Environment
+          SDKMANAGER=$(find "$ANDROID_HOME" -name sdkmanager -type f 2>/dev/null | head -n 1)
+          if [ -n "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+            "$SDKMANAGER" "platform-tools" "platforms;android-36" "platforms;android-36.1" "build-tools;36.0.0" > /dev/null 2>&1 || true
+          fi
+
+      - name: Install Gradle 9.3.1 & Build APK
         run: |
+          curl -sL https://services.gradle.org/distributions/gradle-9.3.1-bin.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          export PATH="/tmp/gradle-9.3.1/bin:$PATH"
+          gradle --version
+
           if [ ! -f debug.keystore ]; then
             if [ -f debug.keystore.base64 ]; then
               base64 -d debug.keystore.base64 > debug.keystore
@@ -59,27 +68,31 @@ jobs:
               echo "Generated fallback debug.keystore"
             fi
           fi
+
           if [ ! -f .env ]; then
             cp .env.example .env
           fi
 
-      - name: Build Debug APK with Gradle
-        run: |
-          gradle :app:assembleDebug --no-daemon --stacktrace
+          gradle :app:assembleDebug \
+            -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8" \
+            -Dorg.gradle.configuration-cache=false \
+            --no-daemon \
+            --stacktrace
+
           cp app/build/outputs/apk/debug/app-debug.apk OKX-Sniper-AI.apk
+          ls -lh OKX-Sniper-AI.apk
 
       - name: Upload Downloadable APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: OKX-Sniper-AI-APK
-          path: |
-            OKX-Sniper-AI.apk
-            app/build/outputs/apk/debug/app-debug.apk
+          path: OKX-Sniper-AI.apk
           if-no-files-found: error
           retention-days: 30
 
       - name: Publish APK to GitHub Releases (Direct Download)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
