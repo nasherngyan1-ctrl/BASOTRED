@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.recaptcha.RecaptchaAppCheckProviderFactory
@@ -17,8 +18,18 @@ private const val RECAPTCHA_SITE_KEY_RES = "recaptcha_site_key"
 
 fun configureAppCheck(context: Context, intent: Intent?) {
     try {
+        // 1. Ensure FirebaseApp is initialized (with fallback options for standalone GitHub builds)
         if (FirebaseApp.getApps(context).isEmpty()) {
-            FirebaseApp.initializeApp(context)
+            val initialized = FirebaseApp.initializeApp(context)
+            if (initialized == null && FirebaseApp.getApps(context).isEmpty()) {
+                val fallbackOptions = FirebaseOptions.Builder()
+                    .setProjectId("gen-lang-client-0033074149")
+                    .setApplicationId("1:197480984376:android:7cea0275d69086d1bb5bcd")
+                    .setApiKey("AIzaSyC8VKMcgXoy14Z7-U1tfdWYuA_jlqO3_nU")
+                    .setStorageBucket("gen-lang-client-0033074149.firebasestorage.app")
+                    .build()
+                FirebaseApp.initializeApp(context, fallbackOptions)
+            }
         }
 
         if (BuildConfig.DEBUG) {

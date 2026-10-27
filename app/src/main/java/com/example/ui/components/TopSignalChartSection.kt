@@ -113,12 +113,13 @@ fun TopSignalChartSection(
                 ) {
                     Row(
                         modifier = Modifier
+                            .weight(1f)
                             .clip(RoundedCornerShape(8.dp))
                             .clickable(onClick = onScanNowClick)
                             .padding(vertical = 2.dp)
                             .testTag("scan_now_button"),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         if (isScanning) {
                             CircularProgressIndicator(
@@ -135,9 +136,10 @@ fun TopSignalChartSection(
                             )
                         }
                         Text(
-                            text = "نۆتیفیکەیشنی ڕاستەوخۆی OKX ($timerFormatted)",
+                            text = "نۆتیفیکەیشنی OKX ($timerFormatted)",
                             style = MaterialTheme.typography.labelMedium,
-                            color = TextSecondary
+                            color = TextSecondary,
+                            maxLines = 1
                         )
                     }
 
