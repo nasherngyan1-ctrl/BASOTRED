@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">OKX Sniper AI</string>
+    <string name="header_title">OKX Sniper AI</string>
+    <string name="next_signal_timer">ئاگادارکردنەوەی داهاتوو</string>
+    <string name="scan_now">ئێستا بپشکنە</string>
+    <string name="capital_and_leverage">پارە و لیڤرێج</string>
+    <string name="ai_key_settings">کلیلی AI</string>
+    <string name="spot_profit_label">قازانجی Spot</string>
+    <string name="futures_profit_label">قازانجی Futures</string>
+    <string name="current_price_label">نرخی ئێستا</string>
+    <string name="target_price_up_label">بەرزدەبێتەوە بۆ</string>
+    <string name="target_price_down_label">دادەبەزێت بۆ</string>
+    <string name="action_buy_now">بکڕە</string>
+    <string name="action_sell_now">بیفرۆشە</string>
+    <string name="chat_placeholder">وێنەی چارت بنێرە یان ناوی دراوێک بنووسە...</string>
+    <string name="attach_chart_image">ناردنی وێنەی چارت</string>
+    <string name="send_message">ناردن</string>
+</resources>

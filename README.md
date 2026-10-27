@@ -1,11 +1,13 @@
-<div align="center">
+# OKX Sniper AI — سیستەمی زیرەکی سیگناڵ و شیکاری چارت
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+ئەپێکی تایبەت بە بۆرسەی **OKX** بۆ پشکنینی خۆکاری هەموو دراوەکان هەموو 5 خولەک جارێک، هەژمارکردنی قازانجی **Spot** و **Futures** بە دۆلار، و شیکاری وێنەی چارت بە زیرەکی دەستکردی **Google Gemini**.
 
-  <h1>Built with AI Studio</h2>
+## چۆنیەتی دابەزاندنی فایلی APK لە GitHub
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+هەموو ڕێکخستنەکانی **GitHub Actions Workflow**، **Android SDK 36.1**، **Gradle 9.3.1** و **Keystore** لەناو فایلی `.github/workflows/build-apk.yml` ئامادە کراون:
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+1. پڕۆژەکە بنێرە بۆ **GitHub** (Push to GitHub).
+2. لەناو پەڕەی GitHubـەکەت بڕۆ بۆ بەشی **Actions** یان بەشی **Releases**.
+3. دوای تەواوبوونی کارەکە (نزیکەی 2 بۆ 3 خولەک):
+   - لە بەشی **Releases** دەتوانیت ڕاستەوخۆ فایلی **`OKX-Sniper-AI.apk`** دابەزێنیتە ناو مۆبایلەکەت.
+   - یان لەناو **Actions -> Build Android APK -> Artifacts** فایلی **`OKX-Sniper-AI-APK`** دابەزێنیت.

@@ -1,0 +1,92 @@
+name: Build Android APK (OKX Sniper AI)
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build & Upload OKX Sniper AI APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK (API 36 / 36.1)
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK Licenses & Install SDK 36.1
+        run: |
+          yes | sdkmanager --licenses || true
+          sdkmanager "platform-tools" "platforms;android-36" "platforms;android-36.1" "build-tools;36.0.0" || sdkmanager "platform-tools" "platforms;android-36" "build-tools;35.0.0"
+
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Restore Signing Keystore & Environment
+        run: |
+          if [ ! -f debug.keystore ]; then
+            if [ -f debug.keystore.base64 ]; then
+              base64 -d debug.keystore.base64 > debug.keystore
+              echo "Restored debug.keystore from debug.keystore.base64"
+            else
+              keytool -genkeypair -v \
+                -keystore debug.keystore \
+                -alias androiddebugkey \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -storepass android \
+                -keypass android \
+                -dname "CN=Android Debug,O=Android,C=US"
+              echo "Generated fallback debug.keystore"
+            fi
+          fi
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
+
+      - name: Build Debug APK with Gradle
+        run: |
+          gradle :app:assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk OKX-Sniper-AI.apk
+
+      - name: Upload Downloadable APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OKX-Sniper-AI-APK
+          path: |
+            OKX-Sniper-AI.apk
+            app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish APK to GitHub Releases (Direct Download)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "OKX Sniper AI APK v1.0.${{ github.run_number }}"
+          body: "ئەپی OKX Sniper AI ئامادەیە بۆ دابەزاندن و دامەزراندن لەسەر مۆبایل (OKX-Sniper-AI.apk)."
+          files: |
+            OKX-Sniper-AI.apk
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

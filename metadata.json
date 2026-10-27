@@ -1,0 +1,6 @@
+{
+  "name": "OKX Sniper AI",
+  "description": "سیستەمی زیرەکی سیگناڵی کڕین و فرۆشتنی 5 خولەکی و شیکاری چارتی OKX بە هەژمارکردنی قازانجی Spot و Futures",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

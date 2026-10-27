@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Red Bearish Candlestick (Left) -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M37,28h4v52h-4zM31,40h16v26h-16z" />
+    <!-- Green Bullish Candlestick (Right, taller) -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M67,22h4v64h-4zM61,32h16v34h-16z" />
+    <!-- Golden Target Upward Trend Arrow -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M26,74L52,48L62,58L82,36L74,36L74,30L90,30L90,46L84,46L84,39L62,64L52,54L30,78Z" />
+</vector>
